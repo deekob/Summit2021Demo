@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+amplify-authenticator {
+  text-align: center;
+}
+
+.app {
+  text-align: left;
+  flex-grow: 1;
+}
+
+.content {
+  padding: 20px;
+}
+
+.card {
+  padding: 20px;
+}
+
+.navBarTitle {
+  flex-grow: 1
+}
+
+.fixedHeight {
+  height: 150px;
+}
