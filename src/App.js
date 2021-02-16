@@ -5,50 +5,67 @@ import TableCard from './components/TableCard'
 import NavBar from './components/NavBar'
 import AddItemCard from './components/AddItemCard'
 import { Grid } from '@material-ui/core'
+import Amplify from 'aws-amplify'
+import {withAuthenticator } from '@aws-amplify/ui-react'
+import awsconfig from './aws-exports'
+
+import { DataStore } from '@aws-amplify/datastore';
+import { ShoppingListItems } from './models';
+
+Amplify.configure(awsconfig)
+
 
 // This function is called immediately when the page loads, before populating the table with this data
 export async function getUserItems() {
-  return []
+ return await DataStore.query(ShoppingListItems)
 }
 
 // This function is called when a user clicks the button 'Add'
 export async function addItem(itemName) {
-  console.log("Implement AddItem")
+  return await DataStore.save(new ShoppingListItems({
+		"itemName": itemName
+	})
+);
+  
 }
 
 // This function is called when a user deletes an existing item in the table
 export async function deleteItem(itemId) {
-  console.log("Implement DeleteIterm")
+ const modelToDelete = await DataStore.query(ShoppingListItems, itemId);
+ return DataStore.delete(modelToDelete);
 }
 
 
 function App() {
 
-  const [items, setItems] = useState([])
-
+  const [listItems, setItems] = useState([])
   useEffect(() => {
     fetchData()
-
+    async function fetchData() {
+      const listData = await DataStore.query(ShoppingListItems)
+      setItems(listData)
+    }
+    DataStore.observe(ShoppingListItems).subscribe(() => {
+      fetchData()
+    });
+    
   }, [])
 
-  async function fetchData() {
-    console.log("Implement Data load")
-    setItems([])
-  }
-
+  
   return (
     <div className="app">
       <NavBar />
       <div className="content">
-        <Grid container spacing={3}>
+        <Grid container spaci ng={3}>
 
           <AddItemCard
             addAction={
-              async (itemName) => {
+              async (itemName) => {      
                 const response = await addItem(itemName)
 
                 if (response) {
-                  setItems([...items, response])
+                  console.log(response)
+                  setItems([...listItems, response])
                 }
 
               }
@@ -57,12 +74,13 @@ function App() {
 
 
           <TableCard
-            data={items}
+            data={listItems}
             removeAction={async (id) => {
               const response = await deleteItem(id)
-              if (response) {
-                setItems(items.filter(item => item.id !== id))
-              }
+              console.log(response)
+              if ( response ){
+                setItems(listItems.filter(item => item.id !== id))
+            }
             }}
           />
         </Grid>
@@ -71,4 +89,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);

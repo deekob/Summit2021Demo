@@ -1,7 +1,7 @@
 import React from 'react';
 import '../App.css';
 import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
-// import { Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 
 
 
@@ -14,7 +14,7 @@ const NavBar = () => {
             </Typography>
             <Button color="inherit"
                onClick={async ()=>{
-                  // await Auth.signOut();
+                  await Auth.signOut();
                }}
             >
                Logout

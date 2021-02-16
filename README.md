@@ -1,2 +1,3 @@
-# The Amplify Demo for Summit 2021.
-brought to you by deadmau5 and other EDM legends
+# The Amplify Demo showing how to leverage AdminUI in an existing App
+
+This is the final src
